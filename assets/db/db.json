@@ -1,0 +1,34 @@
+{
+  "appointments": [
+    {
+      "selectedDepartment": "",
+      "selectedOption": "",
+      "selectedDateCal": "Tue Aug 15 2023",
+      "id": 1
+    },
+    {
+      "selectedDepartment": "Endocrinology",
+      "selectedOption": "Dr.Aaron Glassman",
+      "selectedDateCal": "Tue Aug 15 2023",
+      "id": 2
+    },
+    {
+      "selectedDepartment": "Checkup",
+      "selectedOption": "Dr.Asher Wolke",
+      "selectedDateCal": "Wed Aug 23 2023",
+      "id": 3
+    },
+    {
+      "selectedDepartment": "Checkup",
+      "selectedOption": "Dr.Asher Wolke",
+      "selectedDateCal": "Thu Aug 24 2023",
+      "id": 4
+    },
+    {
+      "selectedDepartment": "",
+      "selectedOption": "",
+      "selectedDateCal": "Tue Aug 15 2023",
+      "id": 5
+    }
+  ]
+}

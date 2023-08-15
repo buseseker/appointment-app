@@ -1,12 +1,28 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { enUS } from "date-fns/locale"; // Import English locale
+import { useAppointmentContext } from "../../context/AppointmentContext";
 import axios from "axios";
 
-
 const AppointmentForm = () => {
+  const {
+    appointmentList,
+    addAppointment,
+    selectedDepartment,
+    setSelectedDepartment,
+    selectedOption,
+    setSelectedOption,
+    selectedDateCal,
+    setSelectedDateCal,
+  } = useAppointmentContext();
+
+  useEffect(() => {
+    axios.get("http://localhost:3000/appointments").then((res) => {
+      addAppointment(res.data);
+    });
+  }, []);
+
   const departments = {
     Cardiology: [
       { value: "shaun", label: "Dr.Shaun Murphy" },
@@ -52,12 +68,8 @@ const AppointmentForm = () => {
   };
 
   //For Appointment Form
-  const [selectedDepartment, setSelectedDepartment] = useState("");
-  const [selectedOption, setSelectedOption] = useState("");
-  const [selectedDateCal, setSelectedDateCal] = useState(new Date());
 
   //For Appointment Card
-  const [appointmentList, setAppointmentList] = useState([]);
 
   const handleDepartmentChange = (event) => {
     const department = event.target.value;
@@ -76,15 +88,28 @@ const AppointmentForm = () => {
   };
 
   const handleSubmit = () => {
-    setAppointmentList((prevAppointmentList) => [
-      ...prevAppointmentList,
-      {
-        selectedDepartment,
-        selectedOption,
-        selectedDateCal: selectedDateCal.toDateString(),
-      },
-    ]);
+    const isCopy = appointmentList.some(
+      (item) =>
+        item.selectedDepartment === selectedDepartment &&
+        item.selectedOption === selectedOption &&
+        item.selectedDateCal === selectedDateCal.toDateString()
+    );
+
+    if (!isCopy) {
+      axios
+        .post("http://localhost:3000/appointments", {
+          selectedDepartment,
+          selectedOption,
+          selectedDateCal: selectedDateCal.toDateString(),
+        })
+        .then((response) => {
+          addAppointment(response.data);
+        });
+    } else {
+      alert("You've already requested this appointment")
+    }
   };
+
   const departmentOptions = departments[selectedDepartment];
   console.log(departmentOptions);
   return (
