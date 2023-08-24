@@ -6,7 +6,9 @@ import { useAppointmentContext } from "../../context/AppointmentContext";
 import axios from "axios";
 
 const AppointmentForm = () => {
+  //CONTEXT 
   const {
+    deleteAppointment,
     appointmentList,
     addAppointment,
     selectedDepartment,
@@ -15,13 +17,37 @@ const AppointmentForm = () => {
     setSelectedOption,
     selectedDateCal,
     setSelectedDateCal,
+    setAppointmentList,
   } = useAppointmentContext();
 
-  useEffect(() => {
-    axios.get("http://localhost:3000/appointments").then((res) => {
-      addAppointment(res.data);
-    });
-  }, []);
+  //USESTATE FOR ERROR STATEMENT
+  const [departmentErr, setDepartmentErr] = useState(false);
+  const [doctorErr, setDoctorErr] = useState(false);
+  const [dateErr, setDateErr] = useState(false);
+
+  //TO GET CURRENT APPOINTMENTS WHEN THE PAGE IS LOADED
+  // useEffect(async () => {
+  //   const response=await axios.get("http://localhost:3001/appointments");
+  //   if(response.status===200){
+  //     addAppointment(response.data);
+  //     console.log("page is loaded");
+  //   }
+  // }, []);
+
+useEffect(() => {
+  fetchData();
+}, [])
+
+const fetchData=async()=>{
+  try {
+    const response = await axios.get("http://localhost:3001/appointments"); // Replace with the actual API URL
+    addAppointment(response.data);
+    console.log("page is loaded");
+    console.log(response.data);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+}
 
   const departments = {
     Cardiology: [
@@ -67,10 +93,6 @@ const AppointmentForm = () => {
     ],
   };
 
-  //For Appointment Form
-
-  //For Appointment Card
-
   const handleDepartmentChange = (event) => {
     const department = event.target.value;
     setSelectedDepartment(department);
@@ -87,39 +109,66 @@ const AppointmentForm = () => {
     setSelectedDateCal(date);
   };
 
+  //TO ADD NEW APPOINTMENT
   const handleSubmit = () => {
-    const isCopy = appointmentList.some(
-      (item) =>
-        item.selectedDepartment === selectedDepartment &&
-        item.selectedOption === selectedOption &&
-        item.selectedDateCal === selectedDateCal.toDateString()
-    );
-
-    if (!isCopy) {
-      axios
-        .post("http://localhost:3000/appointments", {
+    if (selectedDepartment && selectedOption && selectedDateCal) {
+      setAppointmentList((prevAppointmentList) => [
+        ...prevAppointmentList,
+        {
           selectedDepartment,
           selectedOption,
           selectedDateCal: selectedDateCal.toDateString(),
-        })
-        .then((response) => {
-          addAppointment(response.data);
-        });
-    } else {
-      alert("You've already requested this appointment")
+        },
+      ]);
+
+      const isCopy = appointmentList.some(
+        (item) =>
+          item.selectedDepartment === selectedDepartment &&
+          item.selectedOption === selectedOption &&
+          item.selectedDateCal === selectedDateCal.toDateString()
+      );
+  
+      if (!isCopy) {
+        axios
+          .post("http://localhost:3001/appointments", {
+            selectedDepartment,
+            selectedOption,
+            selectedDateCal: selectedDateCal.toDateString(),
+          })
+          .then((response) => {
+            addAppointment(response.data);
+          });
+      } else {
+        alert("You've already requested this appointment")
+      }
+    }else{
+      !selectedDepartment && setDepartmentErr(true);
+      !selectedOption && setDoctorErr(true);
+      !selectedDateCal && setDateErr(true);
     }
+    
   };
 
   const departmentOptions = departments[selectedDepartment];
-  console.log(departmentOptions);
+
   return (
     <div className="form-container">
-      <h1>Make an Appointment</h1>
-      <div className="">
+      <h1>Request an Appointment</h1>
+      <div className="section-form">
+      <div className="calendar">
+        <div className="calendar-container">
+          <Calendar
+            onChange={handleDateChange}
+            value={selectedDateCal}
+            locale={enUS}
+          />
+        </div>
+        {dateErr && <p className="err-txt">Should be chosen!</p>}
+      </div>
+      <div className="select-box">
+      <div>
         <select value={selectedDepartment} onChange={handleDepartmentChange}>
-          <option value="" hidden>
-            Choose a Department
-          </option>
+          <option value="" hidden> Choose a Department </option>
           <option value="Cardiology">Cardiology</option>
           <option value="Checkup">CheckUp</option>
           <option value="Endocrinology">Endocrinology</option>
@@ -128,13 +177,12 @@ const AppointmentForm = () => {
           <option value="Pediatrics">Pediatrics</option>
           <option value="Urology">Urology</option>
         </select>
+        {departmentErr && <p className="err-txt">Should be chosen!</p>}
       </div>
 
       <div>
         <select value={selectedOption} onChange={handleOptionChange}>
-          <option value="" hidden>
-            Choose a Doctor
-          </option>
+          <option value="" hidden> Choose a Doctor </option>
           {departmentOptions &&
             departmentOptions.map((option) => (
               <option key={option.value} value={option.label}>
@@ -142,26 +190,29 @@ const AppointmentForm = () => {
               </option>
             ))}
         </select>
+        {doctorErr && <p className="err-txt">Should be chosen!</p>}
       </div>
-      <div>
-        <div className="calendar-container">
-          <Calendar
-            onChange={handleDateChange}
-            value={selectedDateCal}
-            locale={enUS}
-          />
-        </div>
       </div>
-      <button onClick={handleSubmit}>REQUEST AN APPOINTMENT</button>
+      </div>
+      <button className="btn-appointment" onClick={handleSubmit}><i class="fa-solid fa-calendar-check"></i> REQUEST AN APPOINTMENT</button>
+
       <div className="appointment-list">
         {appointmentList.map((listItem) => {
           return (
             <div className="appointment-card">
+              <div>
               <ul>
                 <li>Department: {listItem.selectedDepartment}</li>
                 <li>Doctor: {listItem.selectedOption}</li>
                 <li>Appointment Time: {listItem.selectedDateCal}</li>
               </ul>
+              </div>
+              <div className="btn-delete" onClick={() =>{
+                console.log("deleting");
+                return (deleteAppointment(listItem.id))}}  >
+              <i class="fa-solid fa-trash-can" 
+              ></i> Delete
+              </div>
             </div>
           );
         })}
