@@ -1,76 +1,16 @@
 {
   "appointments": [
     {
-      "selectedDepartment": "",
-      "selectedOption": "",
-      "selectedDateCal": "Tue Aug 15 2023",
+      "selectedDepartment": "Pediatrics",
+      "selectedOption": "Dr.Rodney Holmes",
+      "selectedDateCal": "Sat Aug 26 2023",
       "id": 1
     },
     {
-      "selectedDepartment": "Checkup",
-      "selectedOption": "Dr.Asher Wolke",
-      "selectedDateCal": "Wed Aug 23 2023",
-      "id": 3
-    },
-    {
-      "selectedDepartment": "Checkup",
-      "selectedOption": "Dr.Asher Wolke",
-      "selectedDateCal": "Thu Aug 24 2023",
-      "id": 4
-    },
-    {
-      "selectedDepartment": "",
-      "selectedOption": "",
-      "selectedDateCal": "Tue Aug 15 2023",
-      "id": 5
-    },
-    {
-      "selectedDepartment": "Checkup",
-      "selectedOption": "Dr.Jackson Han",
-      "selectedDateCal": "Wed Aug 16 2023",
-      "id": 6
-    },
-    {
-      "selectedDepartment": "Endocrinology",
-      "selectedOption": "Dr.Alex Park",
-      "selectedDateCal": "Wed Aug 09 2023",
-      "id": 7
-    },
-    {
-      "selectedDepartment": "Checkup",
-      "selectedOption": "Dr.Claire Browne",
-      "selectedDateCal": "Fri Aug 25 2023",
-      "id": 8
-    },
-    {
-      "selectedDepartment": "Endocrinology",
-      "selectedOption": "Dr.Marina Blaize",
-      "selectedDateCal": "Thu Aug 24 2023",
-      "id": 9
-    },
-    {
-      "selectedDepartment": "Endocrinology",
-      "selectedOption": "Dr.Aaron Glassman",
-      "selectedDateCal": "Thu Aug 24 2023",
-      "id": 10
-    },
-    {
-      "selectedDepartment": "Endocrinology",
-      "selectedOption": "Dr.Marina Blaize",
-      "selectedDateCal": "Thu Aug 24 2023",
-      "id": 11
-    },
-    {
-      "selectedDepartment": "Cardiology",
-      "selectedOption": "Dr.Audrey Lim",
-      "selectedDateCal": "Thu Aug 24 2023",
-      "id": 12
-    },
-    {
       "selectedDepartment": "Pediatrics",
-      "selectedOption": "Dr.Rodney Holmes",
-      "selectedDateCal": "Fri Aug 18 2023",
-      "id": 13
+      "selectedOption": "Dr.Riley Browning",
+      "selectedDateCal": "Sat Aug 26 2023",
+      "id": 2
     }
   ]
 }

@@ -1,4 +1,4 @@
-import React, { useContext, useState, createContext} from "react";
+import React, { useContext, useState, createContext, useEffect } from "react";
 import axios from "axios";
 
 const AppointmentContext = createContext();
@@ -13,42 +13,48 @@ export function AppointmentContextProvider({ children }) {
   const [selectedOption, setSelectedOption] = useState("");
   const [selectedDateCal, setSelectedDateCal] = useState(new Date());
 
-  const addAppointment = (appointment) => {
-    setAppointmentList((prevAppointmentList) => [
-      ...prevAppointmentList,
-      appointment,
-    ]);
+  //TO GET CURRENT APPOINTMENTS WHEN THE PAGE IS LOADED
+  const getData = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/appointments");
+      if (response.status === 200) {
+        setAppointmentList(response.data);
+        console.log("Appointments fetched successfully");
+      }
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    }
   };
 
+  useEffect(() => {
+    getData();
+  }, []);
+
   //APPOINTMENT DELETE REQUEST
-  const deleteAppointment = async (appointmentId) => {
-    const response = await axios.delete(
-      `http://localhost:3001/appointments/${appointmentId}`
-    );
-    if (response.status === 200) {
-      const updatedAppointments = appointmentList.filter(
-        (item) => item.id !== appointmentId
+  const deleteAppointment = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3001/appointments/${id}`);
+      setAppointmentList((prevAppointments) =>
+        prevAppointments.filter((appointment) => appointment.id !== id)
       );
-      addAppointment(updatedAppointments);
-      console.log(`Deleting appointment with ID: ${appointmentId}`);
-    } else {
-        console.log(`Something is wrong`);
+    } catch (error) {
+      console.error("Error deleting appointment:", error);
     }
+    
   };
 
   return (
     <AppointmentContext.Provider
       value={{
         appointmentList,
-        addAppointment,
         selectedDepartment,
         setSelectedDepartment,
         selectedOption,
         setSelectedOption,
         selectedDateCal,
         setSelectedDateCal,
-        deleteAppointment,
         setAppointmentList,
+        deleteAppointment,
       }}
     >
       {children}
